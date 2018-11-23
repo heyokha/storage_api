@@ -2,10 +2,9 @@ import glob
 import hashlib
 import os
 
-from flask import Flask, make_response, request, send_file
+from flask import Flask, request, make_response, send_file
 
 app = Flask(__name__)
-
 
 FILEROOT = 'store/'
 
@@ -26,7 +25,7 @@ def file_chunks(file, chunk_size: int = 8192):
     file.seek(0)
 
 
-def save_file(filehash, newfile, extension):
+def creation(filehash, newfile, extension):
     fullpath = FILEROOT + filehash[0:2]
     filename = filehash + extension
     if os.path.exists(fullpath):
@@ -36,19 +35,17 @@ def save_file(filehash, newfile, extension):
             newfile.save(os.path.join(fullpath, filename))
             return filehash
     else:
-        os.mkdir(fullpath, 0o755)
+        os.mkdir(fullpath,0o755)
         newfile.save(os.path.join(fullpath, filename))
         return filehash
 
-
-@app.route('/upload', methods=['POST'])
+@app.route("/upload", methods=['POST'])
 def upload():
     newfile = request.files['file']
     _, extension = os.path.splitext(newfile.filename)
     filehash = create_name(newfile)
-    response = save_file(filehash, newfile, extension)
+    response = creation(filehash, newfile, extension)
     return response
-
 
 def check_file(name):
     fullpath = FILEROOT + name[0:2]
@@ -57,17 +54,15 @@ def check_file(name):
     if len(found_files) > 0:
         return found_files[0]
 
-
-@app.route('/download/<filehash>', methods=['GET'])
+@app.route("/download/<filehash>", methods=['GET'])
 def download(filehash):
     filename = check_file(filehash)
     if filename:
         return send_file(filename)
     else:
-        return make_response('File doesn\'t exist', 404)
+            return make_response('File doesn\'t exist', 404)
 
-
-@app.route('/delete/<filehash>', methods=['DELETE'])
+@app.route("/delete/<filehash>", methods=['DELETE'])
 def delete(filehash):
     filename = check_file(filehash)
     if filename:
@@ -76,6 +71,5 @@ def delete(filehash):
     else:
         return make_response('File doesn\'t exist', 404)
 
-
-if __name__ == '__main__':
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
