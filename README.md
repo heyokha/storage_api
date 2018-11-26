@@ -74,7 +74,7 @@ curl --request POST \
 
 ```bash
 curl --request GET \
-  --url http://localhos5000/download/samplehash \
+  --url http://localhost:5000/download/samplehash \
 ```
     
 **Delete**
@@ -108,5 +108,5 @@ curl --request GET \
 
 ```bash
 curl --request DELETE \
-  --url http://localhos5000/download/samplehash \
+  --url http://localhost:5000/download/samplehash \
 ```
